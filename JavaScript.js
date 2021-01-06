@@ -19,6 +19,8 @@ let win;
 /*----- cached element references -----*/
 const squares = Array.from(document.querySelectorAll('#board div'));
 const messages = document.querySelector('h2');
+
+
 /*----- event listeners -----*/
 document.getElementById('board').addEventListener('click', handleTurn);
 document.getElementById('reset-button').addEventListener('click', init);
@@ -46,14 +48,16 @@ function init() {
 //         };
 
 function render() {
-    board.forEach(function(val, idx) {
-    squares[idx].textContent = val;
-    });
+
+
+    for(let i =0 ; i < board.length; i++){
+      squares[i].textContent = board[i];
+    }
     // new code below
     if ( win === 'T' ) {
         messages.textContent = `That's a tie, queen!`
       } else if (win) { 
-        messages.textContent = `${win} wins the game!`
+        messages.textContent = `${turn} wins the game!`
       } else {
         messages.textContent = `It's ${turn}'s turn!`
       }
@@ -67,8 +71,12 @@ function handleTurn(event) {
                             // new code below
                 board[idx] = turn;
                 
-                win = getWinner();
-                
+               
+               const playerPositions = getPlayerPosition(turn, board);
+               let isWin = playerPositionIncludesWinningCombo(playerPositions, winningCombos);
+               let isTie = board.every( cell => cell !== "");
+        
+              win = isWin;
                 if (turn === 'X') {
                 turn = 'O' 
                 } else {
@@ -78,13 +86,20 @@ function handleTurn(event) {
                 render();
             };
 
-function getWinner() {
-                let winner = null;
-                winningCombos.forEach((combo, index) => {
-                if (board[combo[0]] && board[combo[0]] === board[combo[1]] && board[combo[0]] === board[combo[2]]) {
-                winner = board[combo[0]];
-                }
-                });
-                // new code below
-                return winner ? winner : board.includes('') ? null : 'T';
-                };
+
+  function getPlayerPosition(currentTurn, board){
+    const playerPositions = [];
+    for(let i = 0; i < board.length; i++){
+      if(board[i] == currentTurn){
+        playerPositions.push(i);
+      }
+    }
+    return playerPositions;
+  }
+
+  function playerPositionIncludesWinningCombo(playerPositions, winningCombos) {
+    console.log({winningCombos, playerPositions});
+     return  winningCombos.some( winningCombo => {
+        return  winningCombo.every(position => playerPositions.includes(position));
+        })
+  }
