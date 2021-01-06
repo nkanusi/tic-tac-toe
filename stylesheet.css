@@ -58,6 +58,11 @@ font-size: 40px;
     background-color: orange;
     cursor:pointer;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem;
+    color:#efefef;
     
 }
 #reset-button {
